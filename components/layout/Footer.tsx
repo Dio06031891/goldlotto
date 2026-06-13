@@ -7,11 +7,11 @@ export function Footer() {
     <footer className="mt-auto border-t border-slate-200 bg-white py-10 text-sm text-muted">
       <div className="mx-auto max-w-5xl space-y-6 px-4">
         <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <Link href="/lucky-items" className="font-semibold text-amber-800 hover:text-amber-950">
+            행운템
+          </Link>
           <Link href="/guide" className="hover:text-brand">
             가이드
-          </Link>
-          <Link href="/lucky-items" className="hover:text-brand">
-            행운템
           </Link>
           <Link href="/about" className="hover:text-brand">
             소개
