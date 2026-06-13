@@ -1,11 +1,18 @@
 import { unstable_cache } from 'next/cache';
 import type { DhLotteryDrawJson } from '@/lib/lotto/dhlottery-types';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
+import { loadLatestDrawSnapshot } from '@/lib/lotto/latest-draw-snapshot';
 import { fetchDrawByDrwNo } from '@/lib/lotto/upstream-lt645';
 
 async function loadDrawByNo(drwNo: number): Promise<DhLotteryDrawJson | null> {
   if (!Number.isInteger(drwNo) || drwNo < 1) return null;
+
+  const snap = loadLatestDrawSnapshot();
+  if (snap?.drwNo === drwNo) return snap;
+  if (isNextProductionBuild()) return null;
+
   try {
-    return await fetchDrawByDrwNo(drwNo, { retries: 3 });
+    return await fetchDrawByDrwNo(drwNo, { retries: 2 });
   } catch {
     return null;
   }

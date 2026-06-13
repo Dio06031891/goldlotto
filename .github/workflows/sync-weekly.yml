@@ -36,12 +36,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No store data changes to commit."
           else
-            git commit -m "$(cat <<'EOF'
-chore: weekly 명당·판매점 데이터 동기화
-
-동행복권 1등 당첨 판매점 API 증분 반영 (GitHub Actions).
-EOF
-)"
+            git commit -m "chore: weekly 명당·판매점 데이터 동기화"
             git push
           fi
 

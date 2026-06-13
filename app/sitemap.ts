@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getAllLuckyItems, resolveItemSlug } from '@/lib/content/lucky-items';
+import { getLatestDrwNoFromDisk } from '@/lib/lotto/latest-draw-hint';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 import { getCachedLatestDrwNo } from '@/lib/lotto/cached-latest-no';
 import { getCachedSchedule } from '@/lib/lotto/cached-schedule';
 import { SIDO_LIST } from '@/lib/stores/korea-regions';
@@ -37,14 +39,17 @@ const staticRoutes: MetadataRoute.Sitemap = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const schedule = await getCachedSchedule();
-  const latest = await getCachedLatestDrwNo();
+  const latest = isNextProductionBuild()
+    ? getLatestDrwNoFromDisk()
+    : await getCachedLatestDrwNo();
+  const schedule = isNextProductionBuild() ? null : await getCachedSchedule();
 
   let drawNos: number[] = [];
   if (schedule?.length) {
     drawNos = schedule.map((e) => e.drwNo);
   } else if (latest) {
-    drawNos = Array.from({ length: latest }, (_, i) => i + 1);
+    const start = Math.max(1, latest - 99);
+    drawNos = Array.from({ length: latest - start + 1 }, (_, i) => start + i);
   }
 
   const drawEntries: MetadataRoute.Sitemap = drawNos.map((no) => ({

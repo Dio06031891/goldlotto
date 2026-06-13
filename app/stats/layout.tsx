@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: '로또 6/45 통계 | 번호 출현·자주나온/안나온·패턴',
   description:

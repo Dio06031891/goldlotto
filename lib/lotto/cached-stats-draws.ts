@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import type { StatDraw } from '@/lib/core/stats/calculator';
 import { parsePstLt645AllListDraws } from '@/lib/lotto/dhlottery-types';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 import { fetchPstLt645Raw, parseLt645Json } from '@/lib/lotto/upstream-lt645';
 
 export type StatsDrawsPayload = {
@@ -10,6 +11,8 @@ export type StatsDrawsPayload = {
 };
 
 async function loadStatsDraws(): Promise<StatsDrawsPayload | null> {
+  if (isNextProductionBuild()) return null;
+
   try {
     const { ok, text } = await fetchPstLt645Raw('all');
     if (!ok) return null;

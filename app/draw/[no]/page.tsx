@@ -11,11 +11,13 @@ import { afterTax } from '@/lib/core/tax/calculator';
 import { formatKoreanAmount, formatKRW } from '@/lib/core/format/currency';
 import { getCachedDrawByNo } from '@/lib/lotto/cached-draw-by-no';
 import { getCachedLatestDrwNo } from '@/lib/lotto/cached-latest-no';
+import { loadLatestDrawSnapshot } from '@/lib/lotto/latest-draw-snapshot';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 import { drawPageDescription, drawPageTitle } from '@/lib/lotto/draw-seo';
 import { formatYmdKorean } from '@/lib/lotto/draw-format';
 
-/** 빌드 시 최근 N회만 선생성, 나머지는 첫 방문 시 ISR */
-const STATIC_PRERENDER_COUNT = 100;
+/** 빌드 시 스냅샷 1회만 선생성 — 나머지 회차는 첫 방문 시 ISR */
+const STATIC_PRERENDER_COUNT = 1;
 
 export const revalidate = 86_400;
 export const dynamicParams = true;
@@ -29,6 +31,12 @@ function parseDrwNo(raw: string): number | null {
 }
 
 export async function generateStaticParams() {
+  const snap = loadLatestDrawSnapshot();
+  if (snap?.drwNo) {
+    return [{ no: String(snap.drwNo) }];
+  }
+  if (isNextProductionBuild()) return [];
+
   const latest = await getCachedLatestDrwNo();
   if (!latest) return [];
   const count = Math.min(STATIC_PRERENDER_COUNT, latest);

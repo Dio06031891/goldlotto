@@ -4,6 +4,8 @@ import {
   type DhLotteryDrawJson,
 } from '@/lib/lotto/dhlottery-types';
 import { getCachedLatestDraw } from '@/lib/lotto/cached-draw';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
+import { loadLatestDrawSnapshot } from '@/lib/lotto/latest-draw-snapshot';
 import {
   fetchDrawByDrwNo,
   fetchPstLt645Raw,
@@ -12,6 +14,12 @@ import {
 
 async function loadRecentDraws(limit: number): Promise<DhLotteryDrawJson[]> {
   const cap = Math.min(20, Math.max(1, limit));
+
+  if (isNextProductionBuild()) {
+    const snap = loadLatestDrawSnapshot();
+    return snap?.numbers?.length === 6 ? [snap] : [];
+  }
+
   try {
     const { ok, text } = await fetchPstLt645Raw('all');
     if (ok) {

@@ -5,6 +5,7 @@ import {
   type DhLotteryDrawJson,
   type LottoEpisodeSchedule,
 } from '@/lib/lotto/dhlottery-types';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 
 if (typeof dns.setDefaultResultOrder === 'function') {
   dns.setDefaultResultOrder('ipv4first');
@@ -34,6 +35,9 @@ export async function fetchPstLt645Raw(
   srchLtEpsd: string | number,
   opts?: { retries?: number }
 ): Promise<{ ok: boolean; status: number; text: string }> {
+  if (isNextProductionBuild()) {
+    return { ok: false, status: 0, text: '' };
+  }
   const maxAttempts = opts?.retries ?? 3;
   let lastErr: unknown;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -137,11 +141,12 @@ export function estimateMaxDrwNo(now = Date.now()): number {
 
 export async function fetchLatestDrawWithFallback(): Promise<DhLotteryDrawJson | null> {
   const { loadLatestDrawSnapshot } = await import('@/lib/lotto/latest-draw-snapshot');
-  const { getLatestDrawHintDrwNo } = await import('@/lib/lotto/latest-draw-hint');
 
-  // 1) Git 스냅샷 — Vercel에서 API 차단·타임아웃 시 즉시 표시
   const snapshot = loadLatestDrawSnapshot();
   if (snapshot?.numbers?.length === 6) return snapshot;
+  if (isNextProductionBuild()) return snapshot;
+
+  const { getLatestDrawHintDrwNo } = await import('@/lib/lotto/latest-draw-hint');
 
   // 2) 단일 요청 — all 목록
   try {
@@ -174,9 +179,12 @@ export async function fetchLatestDrawWithFallback(): Promise<DhLotteryDrawJson |
  * `all` 응답을 쓸 수 없을 때, 최신 회차부터 역으로 소량만 조회해 추첨일 목록을 만든다.
  */
 export async function buildRecentEpisodesFallback(
-  maxBack = 100
+  maxBack = 100,
+  latestHint?: number
 ): Promise<LottoEpisodeSchedule[] | null> {
-  const latestNo = await findLatestDrwNoFast(estimateMaxDrwNo());
+  const latestNo =
+    latestHint ??
+    (await findLatestDrwNoFast(estimateMaxDrwNo()));
   if (latestNo === null) return null;
   const acc: LottoEpisodeSchedule[] = [];
   const low = Math.max(1, latestNo - maxBack);

@@ -8,6 +8,7 @@ import { StatsWindowFilter } from '@/components/stats/StatsWindowFilter';
 import { numberDetailStats } from '@/lib/core/stats/calculator';
 import { sliceDrawsByWindow, parseStatsWindow } from '@/lib/core/stats/window';
 import { getCachedStatsDraws } from '@/lib/lotto/cached-stats-draws';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 import { windowQuery } from '@/lib/stats/load-stats-page';
 
 type PageProps = {
@@ -15,7 +16,10 @@ type PageProps = {
   searchParams: { window?: string };
 };
 
+export const dynamicParams = true;
+
 export function generateStaticParams() {
+  if (isNextProductionBuild()) return [];
   return Array.from({ length: 45 }, (_, i) => ({ n: String(i + 1) }));
 }
 

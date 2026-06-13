@@ -6,6 +6,8 @@ import { LatestDrawSkeleton } from '@/components/lotto/LatestDrawSkeleton';
 import { RecentDrawsPreview } from '@/components/lotto/RecentDrawsPreview';
 import { env } from '@/lib/utils/env';
 
+export const revalidate = 120;
+
 const highlights = [
   {
     title: '세금·실수령액',

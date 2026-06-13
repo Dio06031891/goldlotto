@@ -8,8 +8,18 @@ import {
   fetchPstLt645Raw,
   parseLt645Json,
 } from '@/lib/lotto/upstream-lt645';
+import { getLatestDrwNoFromDisk } from '@/lib/lotto/latest-draw-hint';
+import { isNextProductionBuild } from '@/lib/lotto/is-production-build';
 
 async function loadScheduleEpisodes(): Promise<LottoEpisodeSchedule[] | null> {
+  if (isNextProductionBuild()) {
+    const latest = getLatestDrwNoFromDisk();
+    const start = Math.max(1, latest - 99);
+    const out: LottoEpisodeSchedule[] = [];
+    for (let n = start; n <= latest; n++) out.push({ drwNo: n, drwNoDate: '' });
+    return out.length ? out : null;
+  }
+
   try {
     const { ok, text } = await fetchPstLt645Raw('all');
     if (ok) {
@@ -25,7 +35,7 @@ async function loadScheduleEpisodes(): Promise<LottoEpisodeSchedule[] | null> {
   }
 
   try {
-    return await buildRecentEpisodesFallback(100);
+    return await buildRecentEpisodesFallback(100, getLatestDrwNoFromDisk());
   } catch {
     return null;
   }
