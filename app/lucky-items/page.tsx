@@ -24,8 +24,6 @@ export const metadata: Metadata = {
 
 export default function LuckyItemsIndexPage() {
 
-  const total = getAllLuckyItems().length;
-
   const withLink = getAllLuckyItems().filter((i) => i.coupangUrl?.includes('coupang.com')).length;
 
 
@@ -40,9 +38,9 @@ export default function LuckyItemsIndexPage() {
 
         로또·복권 구매 전후에 많이 찾는 개운·풍수 소품입니다.{' '}
 
-        <strong className="font-semibold text-ink">쿠팡 파트너스 실제 상품 {withLink}개</strong>
+        <strong className="font-semibold text-ink">쿠팡 상품 {withLink}개</strong>
 
-        를 카테고리별로 연결해 두었습니다. (전체 {total}개 · 2026년 6월 등록)
+        를 카테고리별로 모아 두었습니다.
 
       </p>
 
@@ -50,9 +48,7 @@ export default function LuckyItemsIndexPage() {
 
       <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50/60 px-4 py-3 text-sm text-emerald-950">
 
-        <strong className="font-bold">업데이트 완료</strong> — 엑셀에서 가져온 상품명·가격·
-
-        쿠팡 딥링크가 반영되었습니다. 카드를 누르면 상세 설명과 구매 버튼으로 이동합니다.
+        카드를 누르면 상품 설명과 쿠팡 구매 페이지로 이동합니다. 가격·구성은 쿠팡 페이지 기준입니다.
 
       </div>
 

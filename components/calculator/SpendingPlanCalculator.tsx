@@ -138,8 +138,8 @@ export function SpendingPlanCalculator() {
       <div className="mt-10 rounded-2xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
         <p className="text-base font-semibold text-ink">사용 계획을 시작해 보세요</p>
         <p className="mt-2 text-sm text-muted">
-          세후 당첨금을 입력하면 카테고리별로 나눠 쓸 수 있습니다. 데이터는 이 기기의
-          브라우저(IndexedDB)에만 저장됩니다.
+          세후 당첨금을 입력하면 카테고리별로 나눠 쓸 수 있습니다. 입력 내용은 이 기기에만
+          저장되며 서버로 전송되지 않습니다.
         </p>
         <div className="mx-auto mt-6 max-w-xs">
           <MoneyInput
@@ -436,7 +436,7 @@ export function SpendingPlanCalculator() {
       </section>
 
       <p className="text-xs leading-relaxed text-muted">
-        ※ 사용 계획은 이 브라우저의 IndexedDB에만 저장되며 서버로 전송되지 않습니다. 세후
+        ※ 사용 계획은 서버로 전송되지 않으며, 이 브라우저에만 저장됩니다. 세후
         총액은{' '}
         <Link href="/calculator/tax" className="font-medium text-brand underline">
           세금 계산기

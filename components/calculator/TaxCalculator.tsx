@@ -497,7 +497,7 @@ export function TaxCalculator() {
           </div>
 
           <p className="text-xs leading-relaxed text-muted">
-            회차별 금액은 동행복권 lt645 JSON API를 서버에서 조회합니다. 다른 회차는
+            회차별 금액은 동행복권 공식 당첨번호 기준으로 불러옵니다. 다른 회차는
             <strong className="font-medium text-ink"> 추첨일(토요일)</strong>만 선택할 수
             있습니다. 일시적 오류 시 회차 번호 입력 또는 금액 직접 입력 탭을 이용해 주세요.
             실제 수령액은 세무 처리에 따라 달라질 수 있습니다.

@@ -16,8 +16,8 @@ export default function SpendingPlanPage() {
         사용 계획 계산기
       </h1>
       <p className="mt-3 text-base leading-relaxed text-muted">
-        세후 총당첨금을 카테고리별로 나눠 보세요. 플랜은 이 기기의 IndexedDB에만 저장되며
-        서버로 전송되지 않습니다.
+        세후 총당첨금을 카테고리별로 나눠 보세요. 작성한 플랜은 서버로 전송되지 않으며, 이
+        기기(브라우저)에만 저장됩니다.
       </p>
       <SpendingPlanClient />
     </main>

@@ -39,12 +39,7 @@ export default function StoresPage() {
           >
             동행복권 당첨판매점
           </a>{' '}
-          공식 API를 {meta.fromDrwNo}~{meta.toDrwNo}회 기준으로 집계했습니다 (
-          {new Date(meta.syncedAt).toLocaleDateString('ko-KR')}, 오프라인{' '}
-          {meta.storeCount.toLocaleString('ko-KR')}곳). 과거 실적이 미래 당첨을 보장하지 않습니다.
-          {meta.dataNote && (
-            <span className="mt-1 block text-xs text-muted">{meta.dataNote}</span>
-          )}
+          공식 발표를 참고해 집계했습니다. 과거 실적이 미래 당첨을 보장하지 않습니다.
         </p>
       ) : (
         <p className="mt-2 text-sm text-muted">
