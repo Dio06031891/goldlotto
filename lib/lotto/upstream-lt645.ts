@@ -139,7 +139,11 @@ export async function fetchLatestDrawWithFallback(): Promise<DhLotteryDrawJson |
   const { loadLatestDrawSnapshot } = await import('@/lib/lotto/latest-draw-snapshot');
   const { getLatestDrawHintDrwNo } = await import('@/lib/lotto/latest-draw-hint');
 
-  // 1) 단일 요청 — Vercel 10초 제한에 맞춤 (이진 탐색 X)
+  // 1) Git 스냅샷 — Vercel에서 API 차단·타임아웃 시 즉시 표시
+  const snapshot = loadLatestDrawSnapshot();
+  if (snapshot?.numbers?.length === 6) return snapshot;
+
+  // 2) 단일 요청 — all 목록
   try {
     const fromAll = await fetchLatestFromAllList();
     if (fromAll?.numbers?.length === 6) return fromAll;
@@ -162,7 +166,7 @@ export async function fetchLatestDrawWithFallback(): Promise<DhLotteryDrawJson |
     }
   }
 
-  // 3) Git 스냅샷 (주간 verify·Actions로 갱신)
+  // 3) Git 스냅샷 (numbers 없을 때)
   return loadLatestDrawSnapshot();
 }
 
