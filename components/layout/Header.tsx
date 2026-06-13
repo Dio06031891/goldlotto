@@ -50,7 +50,12 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-1 md:flex" aria-label="주요 메뉴">
           {nav.map((item) => (
-            <NavLink key={item.href} href={item.href} label={item.label} accent={'accent' in item ? item.accent : false} />
+            <NavLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              accent={'accent' in item ? item.accent : false}
+            />
           ))}
         </nav>
         <Link
@@ -65,7 +70,13 @@ export function Header() {
         aria-label="주요 메뉴"
       >
         {nav.map((item) => (
-          <NavLink key={item.href} href={item.href} label={item.label} accent={item.accent} compact />
+          <NavLink
+            key={item.href}
+            href={item.href}
+            label={item.label}
+            accent={'accent' in item ? item.accent : false}
+            compact
+          />
         ))}
       </nav>
     </header>

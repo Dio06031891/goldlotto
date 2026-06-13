@@ -20,7 +20,8 @@ export function pstLt645Url(srchLtEpsd: string | number): string {
 }
 
 const LT645_HEADERS: Record<string, string> = {
-  Accept: 'application/json',
+  Accept: 'application/json, text/javascript, */*; q=0.01',
+  'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
   'X-Requested-With': 'XMLHttpRequest',
   Referer: 'https://www.dhlottery.co.kr/gameResult.do?method=byWin',
   'User-Agent': UA,
@@ -135,26 +136,34 @@ export function estimateMaxDrwNo(now = Date.now()): number {
 }
 
 export async function fetchLatestDrawWithFallback(): Promise<DhLotteryDrawJson | null> {
-  const cap = estimateMaxDrwNo();
+  const { loadLatestDrawSnapshot } = await import('@/lib/lotto/latest-draw-snapshot');
+  const { getLatestDrawHintDrwNo } = await import('@/lib/lotto/latest-draw-hint');
 
-  try {
-    const latestNo = await findLatestDrwNoFast(cap);
-    if (latestNo !== null) {
-      const draw = await fetchDrawByDrwNo(latestNo, { retries: 3 });
-      if (draw) return draw;
-    }
-  } catch {
-    /* full list fallback */
-  }
-
+  // 1) 단일 요청 — Vercel 10초 제한에 맞춤 (이진 탐색 X)
   try {
     const fromAll = await fetchLatestFromAllList();
-    if (fromAll) return fromAll;
+    if (fromAll?.numbers?.length === 6) return fromAll;
+    if (fromAll?.drwNo) {
+      const full = await fetchDrawByDrwNo(fromAll.drwNo, { retries: 2 });
+      if (full) return full;
+    }
   } catch {
-    /* */
+    /* next */
   }
 
-  return null;
+  // 2) 최신 회차 근처만 역순 소량 조회
+  const hint = getLatestDrawHintDrwNo();
+  for (let n = hint; n >= hint - 8 && n >= 1; n--) {
+    try {
+      const draw = await fetchDrawByDrwNo(n, { retries: 1 });
+      if (draw) return draw;
+    } catch {
+      /* try older */
+    }
+  }
+
+  // 3) Git 스냅샷 (주간 verify·Actions로 갱신)
+  return loadLatestDrawSnapshot();
 }
 
 /**

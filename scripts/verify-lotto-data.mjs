@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const metaPath = path.join(root, 'data', 'stores', 'luck-stores.meta.json');
+const snapshotPath = path.join(root, 'data', 'lotto', 'latest-draw.snapshot.json');
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -41,18 +42,43 @@ async function fetchLatestDrwNo() {
   return { latest: max, sample };
 }
 
+function rowToSnapshot(row) {
+  const ymd = String(row.ltRflYmd ?? '').trim();
+  const drwNoDate =
+    ymd.length === 8 ? `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}` : null;
+  const numbers = [1, 2, 3, 4, 5, 6]
+    .map((i) => Number(row[`tm${i}WnNo`]))
+    .filter((n) => Number.isFinite(n))
+    .sort((a, b) => a - b);
+  if (!drwNoDate || numbers.length !== 6) return null;
+  return {
+    returnValue: 'success',
+    drwNo: Number(row.ltEpsd),
+    drwNoDate,
+    numbers,
+    bonus: Number(row.bnsWnNo),
+    firstWinnerCount: Number(row.rnk1WnNope),
+    firstWinamnt: Number(row.rnk1WnAmt),
+    secondWinamnt: Number(row.rnk2WnAmt),
+    thirdWinamnt: Number(row.rnk3WnAmt),
+    fourthWinamnt: Number(row.rnk4WnAmt),
+    fifthWinamnt: Number(row.rnk5WnAmt),
+    snapshotAt: new Date().toISOString(),
+  };
+}
+
 async function main() {
   const { latest, sample } = await fetchLatestDrwNo();
   console.log(`[verify-lotto-data] 동행복권 최신 회차: ${latest}회`);
 
-  const nums = [
-    sample?.tm1WnNo ?? sample?.drwtNo1,
-    sample?.tm2WnNo ?? sample?.drwtNo2,
-    sample?.tm3WnNo ?? sample?.drwtNo3,
-    sample?.tm4WnNo ?? sample?.drwtNo4,
-    sample?.tm5WnNo ?? sample?.drwtNo5,
-    sample?.tm6WnNo ?? sample?.drwtNo6,
-  ].filter((n) => Number.isFinite(Number(n)));
+  const snap = rowToSnapshot(sample);
+  if (snap) {
+    fs.mkdirSync(path.dirname(snapshotPath), { recursive: true });
+    fs.writeFileSync(snapshotPath, `${JSON.stringify(snap, null, 2)}\n`, 'utf8');
+    console.log(`[verify-lotto-data] 스냅샷 갱신 → data/lotto/latest-draw.snapshot.json (${latest}회)`);
+  }
+
+  const nums = snap?.numbers ?? [];
   if (nums.length !== 6) {
     throw new Error(`${latest}회 당첨번호 6개를 확인하지 못했습니다.`);
   }
@@ -64,7 +90,7 @@ async function main() {
     console.log(
       `[verify-lotto-data] 명당 JSON: ${meta.toDrwNo}회까지 (${meta.storeCount}곳, synced ${meta.syncedAt})`
     );
-    if (gap > 1) {
+    if (gap >= 1) {
       console.warn(
         `[verify-lotto-data] ⚠ 명당 데이터가 API보다 ${gap}회 뒤처져 있습니다. sync:stores:incremental 실행 권장.`
       );

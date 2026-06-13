@@ -18,10 +18,14 @@ export async function LatestDrawSection() {
           <p className="font-semibold">당첨 정보를 불러오지 못했습니다</p>
           <p className="mt-2 text-amber-800/90">
             동행복권 서버 연결이 잠시 불안정할 수 있습니다.{' '}
+            <Link href="/draw/latest" className="font-bold underline">
+              최신 회차 페이지
+            </Link>
+            를 열거나{' '}
             <Link href="/calculator/tax" className="font-bold underline">
               세금 계산기
             </Link>
-            에서 회차를 직접 지정하거나 금액을 입력해 보세요.
+            에서 금액을 직접 입력해 보세요.
           </p>
         </div>
       </section>
