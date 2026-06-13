@@ -1,0 +1,47 @@
+{
+  "name": "goldlotto",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3040",
+    "dev:clean": "node scripts/clean-next.mjs && next dev -p 3040",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sync:stores": "node scripts/sync-winning-stores.mjs",
+    "sync:stores:incremental": "node scripts/sync-winning-stores.mjs --incremental --delay 350",
+    "sync:stores:patch": "node scripts/sync-winning-stores.mjs --patch-failed --delay 350",
+    "verify:lotto": "node scripts/verify-lotto-data.mjs",
+    "sync:stores:compact": "node scripts/compact-luck-stores.mjs",
+    "sync:stores:split": "node scripts/split-luck-stores-by-sido.mjs"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "dexie": "^4.4.3",
+    "html-to-image": "^1.11.13",
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^2.5.4",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.18",
+    "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}

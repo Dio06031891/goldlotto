@@ -1,0 +1,49 @@
+name: Weekly lotto data sync
+
+on:
+  schedule:
+    # 토요일 추첨 후 — 일요일 02:00 KST (토 17:00 UTC)
+    - cron: '0 17 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify 동행복권 API
+        run: node scripts/verify-lotto-data.mjs
+
+      - name: Incremental 명당 sync
+        run: node scripts/sync-winning-stores.mjs --incremental --delay 350
+
+      - name: Commit store data if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stores/
+          if git diff --staged --quiet; then
+            echo "No store data changes to commit."
+          else
+            git commit -m "$(cat <<'EOF'
+chore: weekly 명당·판매점 데이터 동기화
+
+동행복권 1등 당첨 판매점 API 증분 반영 (GitHub Actions).
+EOF
+)"
+            git push
+          fi
+
+      - name: Verify after sync
+        run: node scripts/verify-lotto-data.mjs
