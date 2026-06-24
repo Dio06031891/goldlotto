@@ -7,8 +7,9 @@ export type LottoStorePublic = Omit<LottoStore, 'firstPrizeDraws'> & {
 
 export function toPublicStore(store: LottoStore, opts?: { includeDraws?: boolean }): LottoStorePublic {
   if (opts?.includeDraws) return store;
-  const { firstPrizeDraws: _draws, ...rest } = store;
-  return rest;
+  const { firstPrizeDraws, recentDraws, ...rest } = store;
+  const draws = recentDraws ?? firstPrizeDraws?.slice(-5);
+  return draws?.length ? { ...rest, recentDraws: draws } : rest;
 }
 
 export function toPublicStores(

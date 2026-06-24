@@ -11,7 +11,7 @@ const base = env.SITE_URL.replace(/\/$/, '');
 
 const staticRoutes: MetadataRoute.Sitemap = [
   { url: base, changeFrequency: 'daily', priority: 1 },
-  { url: `${base}/calculator/tax`, changeFrequency: 'monthly', priority: 0.9 },
+  { url: `${base}/calculator/tax`, changeFrequency: 'weekly', priority: 0.95 },
   { url: `${base}/calculator/spending-plan`, changeFrequency: 'monthly', priority: 0.9 },
   { url: `${base}/generator`, changeFrequency: 'weekly', priority: 0.9 },
   { url: `${base}/stats`, changeFrequency: 'daily', priority: 0.85 },

@@ -8,11 +8,12 @@ import type { LottoStore } from '@/lib/types/store';
 type Props = {
   initialStores: LottoStore[];
   initialCenter?: { lat: number; lng: number };
+  totalStores?: number;
 };
 
 const RADIUS_OPTIONS = [1, 3, 5] as const;
 
-export function StoreFinder({ initialStores, initialCenter }: Props) {
+export function StoreFinder({ initialStores, initialCenter, totalStores }: Props) {
   const [query, setQuery] = useState('');
   const [radiusKm, setRadiusKm] = useState<(typeof RADIUS_OPTIONS)[number]>(3);
   const [stores, setStores] = useState(initialStores);
@@ -146,7 +147,11 @@ export function StoreFinder({ initialStores, initialCenter }: Props) {
       />
 
       <p className="text-sm text-muted">
-        {loading ? '검색 중…' : `${stores.length}곳 (1등 배출 명당 데이터)`}
+        {loading
+          ? '검색 중…'
+          : totalStores && totalStores > stores.length
+            ? `전국 ${totalStores.toLocaleString('ko-KR')}곳 중 ${stores.length}곳 표시 (1등 배출 명당)`
+            : `${stores.length.toLocaleString('ko-KR')}곳 (1등 배출 명당)`}
       </p>
 
       <ul className="space-y-4">

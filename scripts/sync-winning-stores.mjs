@@ -46,15 +46,37 @@ function parseArgs(argv) {
   return opts;
 }
 
+function loadExistingStoresFromSidoShards() {
+  const sidoDir = path.join(outDir, 'sido');
+  if (!fs.existsSync(sidoDir)) return [];
+  const files = fs.readdirSync(sidoDir).filter((f) => f.endsWith('.json'));
+  if (files.length === 0) return [];
+  const out = [];
+  for (const file of files) {
+    try {
+      const chunk = JSON.parse(fs.readFileSync(path.join(sidoDir, file), 'utf8'));
+      if (Array.isArray(chunk)) out.push(...chunk);
+    } catch {
+      /* skip bad shard */
+    }
+  }
+  return out;
+}
+
 function loadExistingStores() {
   for (const p of [outSlim, outJson]) {
     if (!fs.existsSync(p)) continue;
     try {
       const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
-      if (Array.isArray(raw)) return raw;
+      if (Array.isArray(raw) && raw.length > 0) return raw;
     } catch {
       /* try next */
     }
+  }
+  const fromShards = loadExistingStoresFromSidoShards();
+  if (fromShards.length > 0) {
+    console.log(`[sync-winning-stores] 시도별 JSON ${fromShards.length}곳 로드`);
+    return fromShards;
   }
   return [];
 }
@@ -312,7 +334,16 @@ async function runIncrementalSync(opts) {
     }
   }
 
-  const stores = patchStoresFromDraws(loadExistingStores(), patches);
+  const existing = loadExistingStores();
+  if (existing.length < 500) {
+    console.error(
+      `[sync-winning-stores] 기존 명당 데이터가 ${existing.length}곳뿐입니다. 증분 동기화를 중단합니다.`
+    );
+    console.error('  전체 동기화: npm run sync:stores');
+    process.exit(1);
+  }
+
+  const stores = patchStoresFromDraws(existing, patches);
   const syncedAt = new Date().toISOString();
 
   fs.writeFileSync(outSlim, JSON.stringify(stores), 'utf8');

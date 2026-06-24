@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { env } from '@/lib/utils/env';
 import { isCoupangEnabled } from '@/lib/utils/ad-slots';
 
-const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? '';
-
 export const metadata: Metadata = {
   title: '서비스 소개',
   alternates: { canonical: '/about' },
@@ -70,22 +68,12 @@ export default function AboutPage() {
             {env.SITE_URL.replace(/^https?:\/\//, '')}
           </a>
         </li>
-        {CONTACT_EMAIL ? (
-          <li>
-            문의:{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-brand underline">
-              {CONTACT_EMAIL}
-            </a>
-          </li>
-        ) : (
-          <li>
-            문의:{' '}
-            <Link href="/contact" className="text-brand underline">
-              문의하기
-            </Link>{' '}
-            페이지 참고
-          </li>
-        )}
+        <li>
+          문의:{' '}
+          <a href={`mailto:${env.CONTACT_EMAIL}`} className="text-brand underline">
+            {env.CONTACT_EMAIL}
+          </a>
+        </li>
       </ul>
 
       <h2 className="mt-8 text-lg font-bold text-ink">수익·제휴 고지</h2>

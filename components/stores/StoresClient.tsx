@@ -17,8 +17,10 @@ const StoreFinder = dynamic(
 
 export function StoresClient({
   initialStores,
+  totalStores,
 }: {
   initialStores: LottoStore[];
+  totalStores?: number;
 }) {
-  return <StoreFinder initialStores={initialStores} />;
+  return <StoreFinder initialStores={initialStores} totalStores={totalStores} />;
 }

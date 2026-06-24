@@ -16,8 +16,9 @@ export const metadata: Metadata = {
 };
 
 export default function StoresPage() {
-  const initial = getTopLuckStores(30);
+  const initial = getTopLuckStores(50);
   const meta = getLuckStoresMeta();
+  const totalStores = meta?.storeCount;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
@@ -30,7 +31,15 @@ export default function StoresPage() {
       </p>
       {meta ? (
         <p className="mt-2 text-sm text-muted">
-          1등 배출 횟수는{' '}
+          {totalStores ? (
+            <>
+              전국 1등 배출 명당{' '}
+              <strong className="text-ink">{totalStores.toLocaleString('ko-KR')}곳</strong>
+              {meta.toDrwNo ? ` · ${meta.toDrwNo}회까지 반영` : ''}. 1등 배출 횟수는{' '}
+            </>
+          ) : (
+            <>1등 배출 횟수는{' '}</>
+          )}
           <a
             href="https://www.dhlottery.co.kr/gameResult.do?method=byWin"
             className="font-medium text-ink underline decoration-gold/60"
@@ -66,7 +75,7 @@ export default function StoresPage() {
       </div>
 
       <div className="mt-8">
-        <StoresClient initialStores={initial} />
+        <StoresClient initialStores={initial} totalStores={totalStores} />
       </div>
 
       <AdSenseSlot slot="stores" />

@@ -38,10 +38,13 @@ function readJsonFile<T>(filePath: string): T | null {
 function normalizeStore(raw: LottoStore): LottoStore {
   const draws = raw.firstPrizeDraws ?? raw.recentDraws ?? [];
   const count = raw.firstPrizeCount ?? draws.length;
+  const firstPrizeDraws =
+    raw.firstPrizeDraws ?? (raw.recentDraws ? [...raw.recentDraws] : []);
   return {
     ...raw,
     firstPrizeCount: count,
-    firstPrizeDraws: raw.firstPrizeDraws ?? (raw.recentDraws ? [...raw.recentDraws] : []),
+    firstPrizeDraws,
+    recentDraws: raw.recentDraws ?? firstPrizeDraws.slice(-5),
   };
 }
 
