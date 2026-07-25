@@ -1,10 +1,10 @@
 {
   "source": "dhlottery.co.kr/wnprchsplcsrch/selectLtWnShp.do",
-  "syncedAt": "2026-07-18T17:56:37.289Z",
+  "syncedAt": "2026-07-25T17:59:24.354Z",
   "fromDrwNo": 262,
-  "toDrwNo": 1233,
-  "storeCount": 4436,
-  "drawsProcessed": 1182,
+  "toDrwNo": 1234,
+  "storeCount": 4440,
+  "drawsProcessed": 1183,
   "drawsFailed": [
     482,
     483,
