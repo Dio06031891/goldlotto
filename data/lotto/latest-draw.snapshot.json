@@ -1,21 +1,21 @@
 {
   "returnValue": "success",
-  "drwNo": 1245,
-  "drwNoDate": "2026-10-10",
+  "drwNo": 1246,
+  "drwNoDate": "2026-10-17",
   "numbers": [
-    4,
-    5,
-    25,
-    28,
-    32,
-    42
+    16,
+    22,
+    23,
+    24,
+    27,
+    28
   ],
-  "bonus": 12,
-  "firstWinnerCount": 10,
-  "firstWinamnt": 3006515775,
-  "secondWinamnt": 55064392,
-  "thirdWinamnt": 1615365,
+  "bonus": 6,
+  "firstWinnerCount": 16,
+  "firstWinamnt": 1881025430,
+  "secondWinamnt": 78376060,
+  "thirdWinamnt": 1497334,
   "fourthWinamnt": 50000,
   "fifthWinamnt": 5000,
-  "snapshotAt": "2026-10-10T20:30:33.404Z"
+  "snapshotAt": "2026-10-17T19:03:51.283Z"
 }
